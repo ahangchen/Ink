@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Ink</string>
+    <string name="action_settings">Settings</string>
+    <string name="Open">Open</string>
+    <string name="Ink">Ink</string>
+    <string name="save">Save</string>
+    <string name="save_complete">Bitmap has been save to %s</string>>
+    <string name="save_failed">Bitmap save failed</string>>
+    <string name="inking">Inking</string>
+    <string name="ink_complete">Ink complete</string>
+    <string name="ink_failed">Ink failed</string>
+    <string name="loading">Loading</string>
+    <string name="press2Open">Press here</string>
+    <string name="clear">Clear</string>
+    <string name="no_img">No image selected</string>
+    <string name="quality">Quality</string>
+    <string name="vivid">Vivid</string>
+    <string name="normal">Normal</string>
+    <string name="blurry">Blurry</string>
+</resources>

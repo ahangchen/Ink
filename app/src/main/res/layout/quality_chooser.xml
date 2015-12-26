@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/menu_bg"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/menu_head"
+        android:text="@string/quality"
+        android:textSize="24sp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey2"/>
+
+    <TextView
+        android:id="@+id/high"
+        style="@style/menu_text"
+        android:text="@string/vivid"/>
+
+    <TextView
+        android:id="@+id/medium"
+        style="@style/menu_text"
+        android:text="@string/normal"/>
+
+    <TextView
+        android:id="@+id/low"
+        style="@style/menu_text"
+        android:text="@string/blurry"/>
+</LinearLayout>

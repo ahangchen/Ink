@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按下的状态 -->
+    <item android:state_enabled="true" android:state_pressed="true" >
+        <shape>
+            <gradient android:startColor="@color/grey" android:endColor="@color/grey"
+                      android:angle="90"/>
+            <!--<stroke android:width="3dp" android:color="@color/light_black" />-->
+            <!--<corners android:topLeftRadius="6dp" android:topRightRadius="6dp" android:bottomLeftRadius="6dp"-->
+                     <!--android:bottomRightRadius="6dp" />-->
+        </shape>
+    </item>
+    <!-- 选中的状态 -->
+    <item android:state_enabled="true" android:state_focused="true">
+        <shape>
+            <gradient android:startColor="@color/grey" android:endColor="@color/grey"
+                      android:angle="270" />
+            <!--<stroke android:width="3dp" android:color="@color/light_black" />-->
+            <!--<corners android:topLeftRadius="6dp" android:topRightRadius="6dp" android:bottomLeftRadius="6dp"-->
+                     <!--android:bottomRightRadius="6dp" />-->
+        </shape>
+    </item>
+    <!-- 没操作的状态 -->
+    <item >
+        <shape>
+            <gradient android:startColor="@color/light_black"
+                      android:endColor="@color/light_black"
+                      android:angle="270" />
+            <!--<stroke android:width="3dp" android:color="@color/light_black" />-->
+            <!--<corners android:topLeftRadius="6dp" android:topRightRadius="6dp" android:bottomLeftRadius="6dp"-->
+                     <!--android:bottomRightRadius="6dp" />-->
+        </shape>
+    </item>
+</selector>

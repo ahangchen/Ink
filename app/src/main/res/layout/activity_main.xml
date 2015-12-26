@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:id="@+id/root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/little_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_black"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/topbar_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/ico"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="25sp"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@null">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/ico"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:id="@+id/mask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_transparent"
+            android:gravity="center"
+            android:text="@string/press2Open"
+            android:textColor="@color/grey"
+            android:textSize="30sp"/>
+    </FrameLayout>
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="3dp"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:background="@color/gray"/>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/ink"
+            style="@style/inkButton"
+            android:text="@string/Ink"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/grey"/>
+
+        <Button
+            android:id="@+id/save"
+            style="@style/inkButton"
+            android:text="@string/save"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/grey"/>
+
+        <Button
+            android:id="@+id/clear"
+            style="@style/inkButton"
+            android:text="@string/clear"
+            />
+    </LinearLayout>
+
+</LinearLayout>
