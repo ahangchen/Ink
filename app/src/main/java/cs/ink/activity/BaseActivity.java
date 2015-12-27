@@ -3,6 +3,8 @@ package cs.ink.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -10,7 +12,6 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import cs.ink.R;
-import cs.ink.view.GestureListener;
 import cs.ink.view.SlideFrame;
 
 public abstract class BaseActivity extends Activity implements View.OnClickListener {
@@ -20,9 +21,12 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 	protected ViewGroup rootView;
 	protected SlideFrame slideFrame;
 
+	public static String TAG = "BaseActivity";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
 		setContentView(R.layout.activity_main);
 		context = this;
 		ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -32,93 +36,57 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 
 	private void init() {
 		rootView = (ViewGroup) findViewById(R.id.root_view).getParent();
-		slideFrame = new SlideFrame(rootView, context, R.layout.quality_chooser, 250);
-//		View content = slideFrame.getContentView();
-//		content.findViewById(R.id.high).setOnClickListener(MainActivity.this);
-//		content.findViewById(R.id.medium).setOnClickListener(MainActivity.this);
-//		content.findViewById(R.id.low).setOnClickListener(MainActivity.this);
+		slideFrame = new SlideFrame(rootView, context, R.layout.slide_container, 250);
 		initView();
 		initDataSource();
 	}
 
 	abstract public void initView();
+
 	abstract public void initDataSource();
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(TAG, "onResume");
 		bind();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		Log.d(TAG, "onStop");
 		unbind();
 	}
 
 
-	protected void bind() {
-//		mask.setOnClickListener(this);
-//		img.setOnClickListener(this);
-//		clear.setOnClickListener(this);
-//		ink.setOnClickListener(this);
-//		save.setOnClickListener(this);
-		rootView.setOnTouchListener(new SlideListener(context));
-		rootView.setLongClickable(true);
-	}
+	abstract protected void bind();
 
-	protected void unbind() {
-//		clear.setOnClickListener(null);
-//		ink.setOnClickListener(null);
-//		save.setOnClickListener(null);
-//		mask.setOnClickListener(null);
-//		img.setOnClickListener(null);
-		rootView.setOnClickListener(null);
-	}
+	abstract protected void unbind();
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		Log.d(TAG, "onDestroy");
 		onRelease();
-//		if (bitmap != null) {
-//			bitmap.recycle();
-//		}
-//		System.gc();
 	}
 
 	protected abstract void onRelease();
 
-	private class SlideListener extends GestureListener {
-		public SlideListener(Context context) {
-			super(context);
-		}
-
-		@Override
-		public boolean onDragLeft() {
-			slideFrame.hide();
-			return false;
-		}
-
-		@Override
-		public boolean onDragRight() {
-			slideFrame.slide();
-			return false;
-		}
-	}
-
 	protected abstract void onDragRight();
+
 	protected abstract void onDragLeft();
 
 	private VelocityTracker mVelocityTracker;
 	private double lastX;
 	private double lastY;
+
 	/**
 	 * 右拖返回
 	 */
-	private boolean dragRight(float velocityX, float velocityY, float currentX, float currentY) {
-		if (velocityY < 900
-				&& Math.abs((currentY - lastY)
-				/ Math.max(currentX - lastX, 1)) < 0.8) {
+	private boolean drag(float velocityX, float velocityY, float currentX, float currentY) {
+		if (Math.abs((currentY - lastY)
+				/ Math.abs(currentX - lastX)) < 0.8) {
 			// 移动角度小于60度
 			if (velocityX > 1000) {
 				onDragRight();
@@ -131,11 +99,14 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 	}
 
 	protected boolean onDrag(MotionEvent ev) {
-		return true;
+		return false;
 	}
+
 	private static int mMaximumVelocity;
+
 	/**
 	 * touch事件
+	 *
 	 * @param ev 会被修改
 	 */
 	public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -159,9 +130,10 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 				case MotionEvent.ACTION_UP:
 					if (mVelocityTracker != null) {
 						mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-						if (dragRight(mVelocityTracker.getXVelocity(), mVelocityTracker.getYVelocity(),
+						if (drag(mVelocityTracker.getXVelocity(), mVelocityTracker.getYVelocity(),
 								ev.getRawX(), ev.getRawY())) {
 							ev.setAction(MotionEvent.ACTION_CANCEL);
+							return false;
 						}
 						mVelocityTracker.recycle();
 						mVelocityTracker = null;
@@ -174,12 +146,28 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 					}
 					break;
 			}
-
 		} else if (mVelocityTracker != null) {
 			mVelocityTracker.recycle();
 			mVelocityTracker = null;
 		}
+		return super.dispatchTouchEvent(ev);
+	}
+
+	protected boolean onMenuPress() {
 		return false;
 	}
 
+	protected boolean onBackPress() {
+		return false;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU) {
+			if (onMenuPress()) return true;
+		} else if (keyCode == KeyEvent.KEYCODE_BACK){
+			if (onBackPress()) return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

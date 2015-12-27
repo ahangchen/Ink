@@ -1,15 +1,14 @@
 package cs.ink.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,45 +17,34 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import cs.ink.R;
-import cs.ink.model.InkHelper;
+import cs.ink.model.ink.InkHelper;
+import cs.ink.model.ink.InkOptManager;
+import cs.ink.model.ink.InkOption;
 import cs.ink.util.concurrent.Task;
 import cs.ink.util.concurrent.TaskCallback;
 import cs.ink.util.concurrent.ThreadUtils;
 import cs.ink.util.img.BitmapUtils;
 import cs.ink.util.img.ImageProcessUtils;
-import cs.ink.view.GestureListener;
-import cs.ink.view.SlideFrame;
 
-public class MainActivity extends Activity implements View.OnClickListener {
-	//will use base activity
-	Context context;
-
+public class MainActivity extends BaseActivity {
+	private ImageView topbarIcon;
+	private TextView topbarLabel;
 	private ImageView img;
 	private TextView mask;
 	private Button clear;
 	private Button ink;
 	private Button save;
-	private ViewGroup rootView;
-	private SlideFrame slideFrame;
 
 	private Bitmap bitmap;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		context = this;
-		initView();
-	}
-
-	private void initView() {
+	public void initView() {
 		img = (ImageView) findViewById(R.id.image);
 		mask = (TextView) findViewById(R.id.mask);
 		clear = (Button) findViewById(R.id.clear);
 		ink = (Button) findViewById(R.id.ink);
 		save = (Button) findViewById(R.id.save);
-		rootView = (ViewGroup) findViewById(R.id.root_view).getParent();
-		slideFrame = new SlideFrame(rootView, context, R.layout.quality_chooser, 250);
+		topbarIcon = (ImageView) findViewById(R.id.topbar_icon);
+		topbarLabel = (TextView) findViewById(R.id.topbar_label);
 		View content = slideFrame.getContentView();
 		content.findViewById(R.id.high).setOnClickListener(MainActivity.this);
 		content.findViewById(R.id.medium).setOnClickListener(MainActivity.this);
@@ -64,44 +52,47 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		bind();
+	public void initDataSource() {
+		InkOptManager.getInstance(slideFrame.getContentView()).initOpt();
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		unbind();
-	}
-
-
-	private void bind() {
+	public void bind() {
 		mask.setOnClickListener(this);
 		img.setOnClickListener(this);
 		clear.setOnClickListener(this);
 		ink.setOnClickListener(this);
 		save.setOnClickListener(this);
-		rootView.setOnTouchListener(new SlideListener(context));
-		rootView.setLongClickable(true);
+		topbarIcon.setOnClickListener(this);
+		topbarLabel.setOnClickListener(this);
+
 	}
 
-	private void unbind() {
+	public void unbind() {
 		clear.setOnClickListener(null);
 		ink.setOnClickListener(null);
 		save.setOnClickListener(null);
 		mask.setOnClickListener(null);
 		img.setOnClickListener(null);
-		rootView.setOnClickListener(null);
+		topbarIcon.setOnClickListener(null);
+		topbarLabel.setOnClickListener(null);
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+	public void onRelease() {
 		if (bitmap != null) {
 			bitmap.recycle();
 		}
 		System.gc();
+	}
+
+	@Override
+	protected void onDragRight() {
+		slideFrame.slide();
+	}
+
+	@Override
+	protected void onDragLeft() {
+		slideFrame.hide();
 	}
 
 	int REQUEST_CODE_GALLERY = 0;
@@ -149,7 +140,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			public boolean run() {
 				try {
 					Bitmap oldBitmap = bitmap;
-					bitmap = ImageProcessUtils.getInkImg(bitmap, 5, 2);
+					bitmap = ImageProcessUtils.getInkImg(bitmap, InkOptManager.getGaussR(), 2);
 					BitmapUtils.recycleBitmap(oldBitmap);
 				} catch (Exception e) {
 					Log.d("ahang", "ink failed", e);
@@ -166,6 +157,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case R.id.topbar_label:
+			case R.id.topbar_icon:
+				slideFrame.slide();
+				break;
 			case R.id.mask:
 			case R.id.image:
 				selectImageFromGallery();
@@ -179,16 +174,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			case R.id.clear:
 				mask.setVisibility(View.VISIBLE);
 				BitmapUtils.recycleBitmap(bitmap);
-				img.setImageBitmap(null);
 				System.gc();
 				break;
 			case R.id.high:
+				InkOptManager.getInstance(slideFrame.getContentView()).set(InkOption.VIVID);
 				Log.d("ahang", "high");
 				break;
 			case R.id.medium:
+				InkOptManager.getInstance(slideFrame.getContentView()).set(InkOption.NORMAL);
 				Log.d("ahang", "medium");
 				break;
 			case R.id.low:
+				InkOptManager.getInstance(slideFrame.getContentView()).set(InkOption.BLURRY);
 				Log.d("ahang", "low");
 				break;
 		}
@@ -231,25 +228,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
 				BitmapUtils.recycleBitmap(oldBitmap);
 			}
 		}
+		img.setImageDrawable(null);
 		img.setImageBitmap(bitmap);
 		mask.setVisibility(View.GONE);
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private class SlideListener extends GestureListener {
-		public SlideListener(Context context) {
-			super(context);
-		}
+	@Override
+	protected boolean onDrag(MotionEvent ev) {
+		return true;
+	}
 
-		@Override
-		public boolean onDragLeft() {
+	@Override
+	protected boolean onBackPress() {
+		if (slideFrame.isShowing()) {
 			slideFrame.hide();
-			return false;
-		}
-
-		@Override
-		public boolean onDragRight() {
-			slideFrame.slide();
+			return true;
+		} else {
 			return false;
 		}
 	}

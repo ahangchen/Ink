@@ -1,7 +1,6 @@
 package cs.ink.view;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,11 +84,11 @@ public class SlideFrame {
 		showing = false;
 	}
 
-	private interface SlideListener {
+	public interface SlideListener {
 		void onSlide();
 	}
 
-	private interface HideListener {
+	public interface HideListener {
 		void onHide();
 	}
 }

@@ -16,8 +16,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:textColor">@color/grey2</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:gravity">left</item>
         <item name="android:paddingRight">10dp</item>
@@ -27,6 +27,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:textColor">@color/grey2</item>
+        <!--<item name="android:background">@color/alp_black</item>-->
         <item name="android:textSize">25sp</item>
         <item name="android:paddingTop">15dp</item>
         <item name="android:paddingBottom">10dp</item>

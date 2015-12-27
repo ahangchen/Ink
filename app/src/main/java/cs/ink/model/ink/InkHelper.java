@@ -1,4 +1,4 @@
-package cs.ink.model;
+package cs.ink.model.ink;
 
 import android.app.Activity;
 import android.content.Context;
