@@ -36,7 +36,7 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 
 	private void init() {
 		rootView = (ViewGroup) findViewById(R.id.root_view).getParent();
-		slideFrame = new SlideFrame(rootView, context, R.layout.slide_container, 250);
+		slideFrame = new SlideFrame(rootView, context, R.layout.slide_container, 200);
 		initView();
 		initDataSource();
 	}
@@ -98,7 +98,7 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 		return false;
 	}
 
-	protected boolean onDrag(MotionEvent ev) {
+	protected boolean needDrag(MotionEvent ev) {
 		return false;
 	}
 
@@ -110,7 +110,7 @@ public abstract class BaseActivity extends Activity implements View.OnClickListe
 	 * @param ev 会被修改
 	 */
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (onDrag(ev)) {
+		if (needDrag(ev)) {
 			// 右划返回
 			switch (ev.getAction() & MotionEvent.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:

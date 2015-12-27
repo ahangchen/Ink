@@ -17,7 +17,7 @@ public class SPUtils {
 	}
 
 	public static String getString(String key, Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences("test",
+		SharedPreferences sharedPreferences = context.getSharedPreferences("CommonSp",
 				Activity.MODE_PRIVATE);
 		return sharedPreferences.getString(key, "");
 	}
@@ -31,7 +31,7 @@ public class SPUtils {
 	}
 
 	public static int getInt(String key, Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences("test",
+		SharedPreferences sharedPreferences = context.getSharedPreferences("CommonSp",
 				Activity.MODE_PRIVATE);
 		return sharedPreferences.getInt(key, -1);
 	}
@@ -45,7 +45,7 @@ public class SPUtils {
 	}
 
 	public static long getLong(String key, Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences("test",
+		SharedPreferences sharedPreferences = context.getSharedPreferences("CommonSp",
 				Activity.MODE_PRIVATE);
 		return sharedPreferences.getLong(key, -1);
 	}
@@ -59,7 +59,7 @@ public class SPUtils {
 	}
 
 	public static float getFloat(String key, Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences("test",
+		SharedPreferences sharedPreferences = context.getSharedPreferences("CommonSp",
 				Activity.MODE_PRIVATE);
 		return sharedPreferences.getFloat(key, -1);
 	}
@@ -73,7 +73,7 @@ public class SPUtils {
 	}
 
 	public static boolean getBoolean(String key, Context context) {
-		SharedPreferences sharedPreferences = context.getSharedPreferences("test",
+		SharedPreferences sharedPreferences = context.getSharedPreferences("CommonSp",
 				Activity.MODE_PRIVATE);
 		return sharedPreferences.getBoolean(key, false);
 	}

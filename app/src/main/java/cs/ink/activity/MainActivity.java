@@ -25,6 +25,7 @@ import cs.ink.util.concurrent.TaskCallback;
 import cs.ink.util.concurrent.ThreadUtils;
 import cs.ink.util.img.BitmapUtils;
 import cs.ink.util.img.ImageProcessUtils;
+import cs.ink.view.SlideFrame;
 
 public class MainActivity extends BaseActivity {
 	private ImageView topbarIcon;
@@ -64,7 +65,6 @@ public class MainActivity extends BaseActivity {
 		save.setOnClickListener(this);
 		topbarIcon.setOnClickListener(this);
 		topbarLabel.setOnClickListener(this);
-
 	}
 
 	public void unbind() {
@@ -174,6 +174,7 @@ public class MainActivity extends BaseActivity {
 			case R.id.clear:
 				mask.setVisibility(View.VISIBLE);
 				BitmapUtils.recycleBitmap(bitmap);
+				img.setImageResource(R.mipmap.ico);
 				System.gc();
 				break;
 			case R.id.high:
@@ -235,13 +236,14 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@Override
-	protected boolean onDrag(MotionEvent ev) {
+	protected boolean needDrag(MotionEvent ev) {
 		return true;
 	}
 
 	@Override
 	protected boolean onBackPress() {
 		if (slideFrame.isShowing()) {
+			InkOptManager.getInstance(slideFrame.getContentView()).refresh();
 			slideFrame.hide();
 			return true;
 		} else {
